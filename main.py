@@ -11,6 +11,24 @@ from discord import app_commands
 
 from datetime import timedelta
 
+from flask import Flask
+from threading import Thread
+
+# Keep-alive web server
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot activo."
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
+
+
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
@@ -163,5 +181,7 @@ async def aislar(
             aislamiento_mensajes.pop(miembro.id, None)
 
     asyncio.create_task(editar_al_terminar())
+
+keep_alive()
 
 bot.run(TOKEN)
